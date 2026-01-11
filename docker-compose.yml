@@ -1,6 +1,55 @@
 version: '3.8'
 
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bookstore-frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,size=10m
+      - /var/cache/nginx:rw,size=10m
+      - /var/log/nginx:rw,size=10m
+      - /var/run:rw,size=1m
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bookstore-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_USER=bookstore
+      - DB_PASSWORD=bookstore123
+      - DB_NAME=bookstore
+      - REDIS_HOST=redis
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,size=100m
+
   mysql:
     image: mysql:8.0
     container_name: bookstore-mysql
@@ -31,3 +80,7 @@ services:
 volumes:
   mysql_data:
   redis_data:
+
+networks:
+  bookstore-network:
+    driver: bridge

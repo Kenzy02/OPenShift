@@ -1,0 +1,52 @@
+# Frontend Production Dockerfile
+# Multi-stage build for optimized static file serving
+
+# Build stage - minimal preparation of static files
+FROM alpine:3.19 AS builder
+
+# Install any build tools if needed (currently none for static files)
+# This stage exists for consistency and future extensibility
+
+# Copy static files
+COPY html/ /tmp/html/
+COPY nginx.conf /tmp/nginx.conf
+COPY security-headers.conf /tmp/security-headers.conf
+
+# Runtime stage - Nginx Alpine for serving static files
+FROM nginx:1.25.3-alpine3.18-slim
+
+# Labels for metadata
+LABEL maintainer="Bookstore Team" \
+      description="Frontend container for Bookstore application" \
+      version="1.0"
+
+# Install security updates (nginx user already exists with appropriate UID)
+RUN apk update && apk upgrade && \
+    apk add --no-cache dumb-init && \
+    rm -rf /var/cache/apk/*
+
+# Copy custom nginx configuration
+COPY --from=builder /tmp/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /tmp/security-headers.conf /etc/nginx/security-headers.conf
+
+# Copy static files to nginx html directory
+COPY --from=builder /tmp/html/ /usr/share/nginx/html/
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /var/cache/nginx /var/log/nginx /var/run && \
+    chown -R nginx:nginx /var/cache/nginx /var/log/nginx /var/run /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
+
+# Switch to non-root user
+USER nginx
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/nginx-health || exit 1
+
+# Expose port
+EXPOSE 8080
+
+# Use dumb-init for proper signal handling
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["nginx", "-g", "daemon off;"]
