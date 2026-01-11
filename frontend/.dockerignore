@@ -1,0 +1,47 @@
+# Frontend .dockerignore
+# Excludes files from frontend Docker context
+
+# Version control
+.git/
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Security reports
+*.sarif
+*.spdx.json
+*.cyclonedx.json
+trivy-*
+
+# Docker files
+Dockerfile*
+.dockerignore
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# CI/CD
+.travis.yml
+.gitlab-ci.yml
+
+# Development artifacts
+node_modules/
+
+# Build artifacts (if any)
+dist/
+build/

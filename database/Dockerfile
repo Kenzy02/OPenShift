@@ -9,6 +9,10 @@ LABEL maintainer="student@example.com" \
 # Copy initialization script
 COPY init.sql /docker-entrypoint-initdb.d/
 
+
+
+USER mysql
+
 # Expose port
 EXPOSE 3306
 

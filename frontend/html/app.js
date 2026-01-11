@@ -1,5 +1,5 @@
 // Bookstore Application JavaScript
-const API_URL = '/api';
+const API_URL = 'http://localhost:3000/api';
 
 // DOM Elements
 const booksContainer = document.getElementById('booksContainer');

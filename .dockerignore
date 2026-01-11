@@ -1,0 +1,74 @@
+# Root .dockerignore
+# This file excludes files from ALL Docker contexts
+# Individual components may have their own .dockerignore files
+
+# Version control
+.git/
+.gitignore
+.github/
+
+# Documentation
+README.md
+*.md
+docs/
+BACKEND-DEVELOPMENT-GUIDE.md
+SECURITY-ASSESSMENT-REPORT.md
+SBOM-REPORT.md
+
+# Security reports and scans
+*.sarif
+*.spdx.json
+*.cyclonedx.json
+trivy-*
+SECURITY-*
+backend-*
+database-*
+frontend-*
+
+# Docker files (avoid recursion)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# CI/CD
+.travis.yml
+.gitlab-ci.yml
+.circleci/
+
+# Testing
+test/
+tests/
+*.test.js
+*.spec.js
+__tests__/
+
+# Development artifacts
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
