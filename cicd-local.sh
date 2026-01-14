@@ -4,7 +4,7 @@
 # This script runs local security scans and prepares reports.
 
 PROJECT_ROOT=$(pwd)
-SECURITY_DIR="$PROJECT_ROOT/security-reports"
+SECURITY_DIR="$PROJECT_ROOT/security"
 IMAGE_TAG=$(git rev-parse --short HEAD 2>/dev/null || echo "latest")
 
 # Ensure security directory exists
