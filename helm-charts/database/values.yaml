@@ -1,0 +1,29 @@
+namespace:
+  create: false
+  name: database
+
+mysql:
+  image:
+    repository: mysql
+    tag: "8.0"
+  rootPassword: rootpassword
+  database: bookstore
+  user: bookstore
+  password: bookstore123
+  service:
+    port: 3306
+  persistence:
+    size: 5Gi
+    accessMode: ReadWriteOnce
+    storageClass: ""  # Use default storage class if empty
+
+redis:
+  image:
+    repository: redis
+    tag: "7.0-alpine"
+  service:
+    port: 6379
+  persistence:
+    size: 5Gi
+    accessMode: ReadWriteOnce
+    storageClass: ""  # Use default storage class if empty

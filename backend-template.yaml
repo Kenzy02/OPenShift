@@ -1,0 +1,89 @@
+---
+# Source: backend/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: release-name-backend-secret
+  labels:
+    app: release-name-backend
+type: Opaque
+data:
+  DB_PASSWORD: "Ym9va3N0b3JlMTIz"
+---
+# Source: backend/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-backend
+  labels:
+    app: release-name-backend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      name: http
+  selector:
+    app: release-name-backend
+---
+# Source: backend/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-backend
+  labels:
+    app: release-name-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: release-name-backend
+  template:
+    metadata:
+      labels:
+        app: release-name-backend
+    spec:
+      containers:
+        - name: backend
+          image: "bookstore-backend:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: DB_HOST
+              value: mysql
+            - name: DB_USER
+              value: bookstore
+            - name: DB_NAME
+              value: bookstore
+            - name: REDIS_HOST
+              value: redis
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: release-name-backend-secret
+                  key: DB_PASSWORD
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20

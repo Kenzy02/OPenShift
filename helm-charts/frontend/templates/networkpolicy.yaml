@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "frontend.fullname" . }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ include "frontend.fullname" . }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "frontend.fullname" . }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - {} # Allow all ingress 
+  egress:
+    # Allow egress to Backend
+    - to:
+        - podSelector:
+            matchLabels:
+              app: {{ include "frontend.fullname" . | replace "frontend" "backend" }} # Assuming standard naming convention
+      ports:
+        - protocol: TCP
+          port: 3000
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53

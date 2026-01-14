@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "frontend.fullname" . }}-config
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ include "frontend.fullname" . }}
+data:
+  nginx.conf: |
+    # Nginx configuration for non-root user
+    worker_processes auto;
+    error_log /var/log/nginx/error.log warn;
+    pid /var/run/nginx.pid;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log /var/log/nginx/access.log main;
+
+        sendfile on;
+        keepalive_timeout 65;
+
+        # Gzip compression
+        gzip on;
+        gzip_types text/plain text/css application/json application/javascript;
+
+        server {
+            listen 8080;
+            server_name localhost;
+            root /usr/share/nginx/html;
+            index index.html;
+
+            # Include security headers
+            include /etc/nginx/security-headers.conf;
+
+            # Frontend routes
+            location / {
+                try_files $uri $uri/ /index.html;
+            }
+
+        # Proxy API requests to backend
+        location /api/ {
+            # CORS headers for API calls
+            add_header Access-Control-Allow-Origin "*" always;
+            add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+            add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization" always;
+            add_header Access-Control-Expose-Headers "Content-Length,Content-Range" always;
+
+            # Handle preflight requests
+            if ($request_method = 'OPTIONS') {
+                add_header Access-Control-Allow-Origin "*" always;
+                add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+                add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization" always;
+                add_header Access-Control-Max-Age 1728000 always;
+                add_header Content-Type 'text/plain charset=UTF-8' always;
+                add_header Content-Length 0 always;
+                return 204;
+            }
+
+            # Proxy to backend service
+            proxy_pass http://be-backend.backend.svc.cluster.local:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+            # Error handling
+            proxy_intercept_errors on;
+            proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
+            proxy_next_upstream_timeout 1s;
+            proxy_next_upstream_tries 3;
+            error_page 502 = @backend_error;
+        }
+
+        location @backend_error {
+            return 502 "Backend service unavailable. Please check logs.";
+        }
+
+        # Health check endpoint
+        location /nginx-health {
+            access_log off;
+            return 200 "OK";
+            add_header Content-Type text/plain;
+        }
+        }
+    }
+
+  security-headers.conf: |
+    # Security Headers Configuration for Nginx
+    # This file contains security headers to protect against common web vulnerabilities
+    # Include this file in your server block with: include /etc/nginx/security-headers.conf;
+
+    # Content Security Policy (CSP)
+    # Allows scripts, styles, images, and API calls for the bookstore application
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' http://be-backend.backend.svc.cluster.local:3000 https://be-backend.backend.svc.cluster.local:3000; frame-ancestors 'none';" always;
+
+    # Prevent clickjacking attacks
+    add_header X-Frame-Options "DENY" always;
+
+    # Prevent MIME type sniffing
+    add_header X-Content-Type-Options "nosniff" always;
+
+    # Enable XSS filtering (for older browsers)
+    add_header X-XSS-Protection "1; mode=block" always;
+
+    # Control referrer information
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # Permissions Policy (formerly Feature Policy)
+    # Restrict access to sensitive browser features
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), gyroscope=(), speaker=(), payment=()" always;
+
+    # Cross-Origin Embedder Policy (COEP)
+    # Enable cross-origin isolation for better security
+    add_header Cross-Origin-Embedder-Policy "require-corp" always;
+
+    # Cross-Origin Opener Policy (COOP)
+    # Prevent certain cross-origin attacks
+    add_header Cross-Origin-Opener-Policy "same-origin" always;
+
+    # Cross-Origin Resource Policy (CORP)
+    # Control cross-origin resource sharing
+    add_header Cross-Origin-Resource-Policy "same-origin" always;
+

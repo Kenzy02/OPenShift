@@ -71,5 +71,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   }).on('error', () => process.exit(1))"
 
 # Use dumb-init for proper signal handling
-ENTRYPOINT ["dumb-init", "--"]
+#ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "server.js"]

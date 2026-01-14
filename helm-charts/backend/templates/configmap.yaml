@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "backend.fullname" . }}-config
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ include "backend.fullname" . }}
+data:
+  NODE_ENV: {{ .Values.env.NODE_ENV | quote }}
+  DB_HOST: {{ .Values.env.DB_HOST | quote }}
+  DB_PORT: {{ .Values.env.DB_PORT | default "3306" | quote }}
+  DB_USER: {{ .Values.env.DB_USER | quote }}
+  DB_NAME: {{ .Values.env.DB_NAME | quote }}
+  REDIS_HOST: {{ .Values.env.REDIS_HOST | quote }}
+  REDIS_PORT: {{ .Values.env.REDIS_PORT | default "6379" | quote }}
+  CACHE_TTL: {{ .Values.env.CACHE_TTL | default "300" | quote }}

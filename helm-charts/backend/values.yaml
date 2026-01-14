@@ -1,0 +1,72 @@
+namespace:
+  create: false
+  name: backend
+
+image:
+  repository: bookstore-backend
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "b830dbd"
+
+
+service:
+  type: ClusterIP
+  port: 3000
+
+env:
+  NODE_ENV: production
+  DB_HOST: mysql.database
+  DB_PORT: "3306"
+  DB_USER: bookstore
+  DB_NAME: bookstore
+  REDIS_HOST: redis.database 
+  REDIS_PORT: "6379"
+  CACHE_TTL: "300"  # Cache TTL in seconds (5 minutes)
+
+# Sensitive data should be managed via Secrets. 
+# For simplicity in this example, we provide a default here, but in production use sealed secrets or external secrets.
+secrets:
+  DB_PASSWORD: bookstore123
+
+# Horizontal Pod Autoscaler configuration
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+  targetMemoryUtilizationPercentage: 80
+  # Optional: Configure scaling behavior
+  # behavior:
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 300
+  #     policies:
+  #     - type: Percent
+  #       value: 50
+  #       periodSeconds: 15
+  #   scaleUp:
+  #     stabilizationWindowSeconds: 0
+  #     policies:
+  #     - type: Percent
+  #       value: 100
+  #       periodSeconds: 15
+  #     - type: Pods
+  #       value: 4
+  #       periodSeconds: 15
+  #     selectPolicy: Max
+
+# Ingress configuration (optional - disabled by default)
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: api.bookstore.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: backend-tls
+  #    hosts:
+  #      - api.bookstore.example.com

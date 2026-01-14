@@ -1,0 +1,32 @@
+namespace:
+  create: false
+  name: frontend
+
+image:
+  repository: bookstore-frontend
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "b830dbd-fixed8"
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: bookstore.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: bookstore-tls
+      hosts:
+        - bookstore.local
+

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "database.fullname" . }}-mysql-pvc
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "database.labels" . | nindent 4 }}
+    app: {{ include "database.fullname" . }}-mysql
+spec:
+  accessModes:
+    - {{ .Values.mysql.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.mysql.persistence.size }}
+  {{- if .Values.mysql.persistence.storageClass }}
+  storageClassName: {{ .Values.mysql.persistence.storageClass }}
+  {{- end }}

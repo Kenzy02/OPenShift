@@ -1,0 +1,180 @@
+---
+# Source: database/templates/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database
+  labels:
+    app: release-name-database
+---
+# Source: database/templates/mysql-networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: release-name-database-mysql
+  labels:
+    app: release-name-database-mysql
+spec:
+  podSelector:
+    matchLabels:
+      app: release-name-database-mysql
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow ingress from Backend
+    - from:
+        - podSelector:
+            matchLabels:
+              app: release-name-backend
+      ports:
+        - protocol: TCP
+          port: 3306
+  egress:
+    # Allow egress to Backend (as requested)
+    - to:
+        - podSelector:
+            matchLabels:
+              app: release-name-backend
+      ports:
+        - protocol: TCP
+          port: 3000
+---
+# Source: database/templates/redis-networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: release-name-database-redis
+  labels:
+    app: release-name-database-redis
+spec:
+  podSelector:
+    matchLabels:
+      app: release-name-database-redis
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow ingress from Backend
+    - from:
+        - podSelector:
+            matchLabels:
+              app: release-name-backend
+      ports:
+        - protocol: TCP
+          port: 6379
+  egress:
+    # Allow egress to Backend (as requested)
+    - to:
+        - podSelector:
+            matchLabels:
+              app: release-name-backend
+      ports:
+        - protocol: TCP
+          port: 3000
+---
+# Source: database/templates/mysql-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql 
+  labels:
+    app: release-name-database-mysql
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      name: mysql
+  selector:
+    app: release-name-database-mysql
+---
+# Source: database/templates/redis-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: release-name-database-redis
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+      name: redis
+  selector:
+    app: release-name-database-redis
+---
+# Source: database/templates/mysql-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: release-name-database-mysql
+  labels:
+    app: release-name-database-mysql
+spec:
+  serviceName: "mysql"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: release-name-database-mysql
+  template:
+    metadata:
+      labels:
+        app: release-name-database-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: "mysql:8.0"
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: rootpassword
+            - name: MYSQL_DATABASE
+              value: bookstore
+            - name: MYSQL_USER
+              value: bookstore
+            - name: MYSQL_PASSWORD
+              value: bookstore123
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-data
+          emptyDir: {}
+---
+# Source: database/templates/redis-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: release-name-database-redis
+  labels:
+    app: release-name-database-redis
+spec:
+  serviceName: "redis"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: release-name-database-redis
+  template:
+    metadata:
+      labels:
+        app: release-name-database-redis
+    spec:
+      containers:
+        - name: redis
+          image: "redis:7.0-alpine"
+          ports:
+            - containerPort: 6379
+          command: ["redis-server", "--appendonly", "yes"]
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+      volumes:
+        - name: redis-data
+          emptyDir: {}
