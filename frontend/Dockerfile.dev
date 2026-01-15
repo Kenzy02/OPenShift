@@ -10,7 +10,7 @@ COPY nginx.conf /tmp/nginx.conf
 COPY security-headers.conf /tmp/security-headers.conf
 
 # Runtime stage - Nginx Alpine with development tools
-FROM nginx:1.25.3-alpine3.18-slim
+FROM nginx:1.29.4-alpine3.23-slim
 
 # Labels for metadata
 LABEL maintainer="Bookstore Team" \
