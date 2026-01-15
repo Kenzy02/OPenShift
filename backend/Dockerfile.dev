@@ -4,7 +4,7 @@
 # ====================
 # Build Stage
 # ====================
-FROM node:18.19.1-alpine3.19 AS builder
+FROM node:18.20.5-alpine3.19 AS builder
 
 # Install build dependencies
 RUN apk add --no-cache \
@@ -28,7 +28,7 @@ COPY server.js ./
 # ====================
 # Development Runtime Stage
 # ====================
-FROM node:18.19.1-alpine3.19 AS development
+FROM node:18.20.5-alpine3.19 AS development
 
 # Metadata
 LABEL maintainer="student@example.com" \
