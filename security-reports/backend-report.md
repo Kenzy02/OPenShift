@@ -1,0 +1,18 @@
+# Security Scan Report: backend
+- **Image**: `bookstore-backend:b830dbd`
+- **Date**: Thu Jan 15 12:45:30 PM EET 2026
+
+## Vulnerability Table
+> [!CAUTION]
+> Scan failed with exit code 1.
+
+### Error Output
+```text
+2026-01-15T12:45:30+02:00	FATAL	Fatal error	image scan error: scan error: unable to initialize a scanner: unable to initialize an image scanner: unable to find the specified image "bookstore-backend:b830dbd" in ["docker" "containerd" "podman" "remote"]: 4 errors occurred:
+	* docker error: unable to inspect the image (bookstore-backend:b830dbd): permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.45/images/bookstore-backend:b830dbd/json": dial unix /var/run/docker.sock: connect: permission denied
+	* containerd error: failed to initialize a containerd client: failed to dial "/run/containerd/containerd.sock": connection error: desc = "transport: error while dialing: dial unix /run/containerd/containerd.sock: connect: permission denied"
+	* podman error: unable to initialize Podman client: no podman socket found: stat /run/user/1000/snap.trivy/podman/podman.sock: no such file or directory
+	* remote error: GET https://index.docker.io/v2/library/bookstore-backend/manifests/b830dbd: UNAUTHORIZED: authentication required; [map[Action:pull Class: Name:library/bookstore-backend Type:repository]]
+
+
+```

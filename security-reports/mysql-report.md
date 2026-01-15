@@ -1,0 +1,95 @@
+# Security Scan Report: mysql
+- **Image**: `mysql:8.0`
+- **Date**: Thu Jan 15 12:45:33 PM EET 2026
+
+## Vulnerability Table
+```text
+
+mysql:8.0 (oracle 9.7)
+======================
+Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
+
+
+Python (python-pkg)
+===================
+Total: 5 (UNKNOWN: 0, LOW: 0, MEDIUM: 2, HIGH: 3, CRITICAL: 0)
+
+┌────────────────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬─────────────────────────────────────────────────────────────┐
+│      Library       │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                            Title                            │
+├────────────────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼─────────────────────────────────────────────────────────────┤
+│ PyNaCl (METADATA)  │ CVE-2025-69277 │ MEDIUM   │ fixed  │ 1.5.0             │ 1.6.2         │ libsodium: pynacl: libsodium: Improper validation of        │
+│                    │                │          │        │                   │               │ elliptic curve points could lead to...                      │
+│                    │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-69277                  │
+├────────────────────┼────────────────┤          │        ├───────────────────┼───────────────┼─────────────────────────────────────────────────────────────┤
+│ pip (METADATA)     │ CVE-2025-8869  │          │        │ 24.2              │ 25.3          │ pip: pip missing checks on symbolic link extraction         │
+│                    │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-8869                   │
+├────────────────────┼────────────────┼──────────┤        ├───────────────────┼───────────────┼─────────────────────────────────────────────────────────────┤
+│ urllib3 (METADATA) │ CVE-2025-66418 │ HIGH     │        │ 2.5.0             │ 2.6.0         │ urllib3: urllib3: Unbounded decompression chain leads to    │
+│                    │                │          │        │                   │               │ resource exhaustion                                         │
+│                    │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-66418                  │
+│                    ├────────────────┤          │        │                   │               ├─────────────────────────────────────────────────────────────┤
+│                    │ CVE-2025-66471 │          │        │                   │               │ urllib3: urllib3 Streaming API improperly handles highly    │
+│                    │                │          │        │                   │               │ compressed data                                             │
+│                    │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-66471                  │
+│                    ├────────────────┤          │        │                   ├───────────────┼─────────────────────────────────────────────────────────────┤
+│                    │ CVE-2026-21441 │          │        │                   │ 2.6.3         │ urllib3: urllib3 vulnerable to decompression-bomb safeguard │
+│                    │                │          │        │                   │               │ bypass when following HTTP redirects (streaming...          │
+│                    │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-21441                  │
+└────────────────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴─────────────────────────────────────────────────────────────┘
+
+usr/local/bin/gosu (gobinary)
+=============================
+Total: 12 (UNKNOWN: 0, LOW: 0, MEDIUM: 10, HIGH: 2, CRITICAL: 0)
+
+┌─────────┬────────────────┬──────────┬────────┬───────────────────┬─────────────────┬──────────────────────────────────────────────────────────────┐
+│ Library │ Vulnerability  │ Severity │ Status │ Installed Version │  Fixed Version  │                            Title                             │
+├─────────┼────────────────┼──────────┼────────┼───────────────────┼─────────────────┼──────────────────────────────────────────────────────────────┤
+│ stdlib  │ CVE-2025-58183 │ HIGH     │ fixed  │ 1.24.6            │ 1.24.8, 1.25.2  │ golang: archive/tar: Unbounded allocation when parsing GNU   │
+│         │                │          │        │                   │                 │ sparse map                                                   │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-58183                   │
+│         ├────────────────┤          │        │                   ├─────────────────┼──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-61729 │          │        │                   │ 1.24.11, 1.25.5 │ crypto/x509: golang: Denial of Service due to excessive      │
+│         │                │          │        │                   │                 │ resource consumption via crafted...                          │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-61729                   │
+│         ├────────────────┼──────────┤        │                   ├─────────────────┼──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-47912 │ MEDIUM   │        │                   │ 1.24.8, 1.25.2  │ net/url: Insufficient validation of bracketed IPv6 hostnames │
+│         │                │          │        │                   │                 │ in net/url                                                   │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-47912                   │
+│         ├────────────────┤          │        │                   │                 ├──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-58185 │          │        │                   │                 │ encoding/asn1: Parsing DER payload can cause memory          │
+│         │                │          │        │                   │                 │ exhaustion in encoding/asn1                                  │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-58185                   │
+│         ├────────────────┤          │        │                   │                 ├──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-58186 │          │        │                   │                 │ golang.org/net/http: Lack of limit when parsing cookies can  │
+│         │                │          │        │                   │                 │ cause memory exhaustion in...                                │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-58186                   │
+│         ├────────────────┤          │        │                   ├─────────────────┼──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-58187 │          │        │                   │ 1.24.9, 1.25.3  │ crypto/x509: Quadratic complexity when checking name         │
+│         │                │          │        │                   │                 │ constraints in crypto/x509                                   │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-58187                   │
+│         ├────────────────┤          │        │                   ├─────────────────┼──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-58188 │          │        │                   │ 1.24.8, 1.25.2  │ crypto/x509: golang: Panic when validating certificates with │
+│         │                │          │        │                   │                 │ DSA public keys in crypto/x509...                            │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-58188                   │
+│         ├────────────────┤          │        │                   │                 ├──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-58189 │          │        │                   │                 │ crypto/tls: go crypto/tls ALPN negotiation error contains    │
+│         │                │          │        │                   │                 │ attacker controlled information                              │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-58189                   │
+│         ├────────────────┤          │        │                   │                 ├──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-61723 │          │        │                   │                 │ encoding/pem: Quadratic complexity when parsing some invalid │
+│         │                │          │        │                   │                 │ inputs in encoding/pem                                       │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-61723                   │
+│         ├────────────────┤          │        │                   │                 ├──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-61724 │          │        │                   │                 │ net/textproto: Excessive CPU consumption in                  │
+│         │                │          │        │                   │                 │ Reader.ReadResponse in net/textproto                         │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-61724                   │
+│         ├────────────────┤          │        │                   │                 ├──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-61725 │          │        │                   │                 │ net/mail: Excessive CPU consumption in ParseAddress in       │
+│         │                │          │        │                   │                 │ net/mail                                                     │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-61725                   │
+│         ├────────────────┤          │        │                   ├─────────────────┼──────────────────────────────────────────────────────────────┤
+│         │ CVE-2025-61727 │          │        │                   │ 1.24.11, 1.25.5 │ golang: crypto/x509: excluded subdomain constraint does not  │
+│         │                │          │        │                   │                 │ restrict wildcard SANs                                       │
+│         │                │          │        │                   │                 │ https://avd.aquasec.com/nvd/cve-2025-61727                   │
+└─────────┴────────────────┴──────────┴────────┴───────────────────┴─────────────────┴──────────────────────────────────────────────────────────────┘
+```

@@ -1,0 +1,7 @@
+2026-01-15T12:45:28+02:00	FATAL	Fatal error	image scan error: scan error: unable to initialize a scanner: unable to initialize an image scanner: unable to find the specified image "bookstore-frontend:b830dbd-fixed8" in ["docker" "containerd" "podman" "remote"]: 4 errors occurred:
+	* docker error: unable to inspect the image (bookstore-frontend:b830dbd-fixed8): permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.45/images/bookstore-frontend:b830dbd-fixed8/json": dial unix /var/run/docker.sock: connect: permission denied
+	* containerd error: failed to initialize a containerd client: failed to dial "/run/containerd/containerd.sock": connection error: desc = "transport: error while dialing: dial unix /run/containerd/containerd.sock: connect: permission denied"
+	* podman error: unable to initialize Podman client: no podman socket found: stat /run/user/1000/snap.trivy/podman/podman.sock: no such file or directory
+	* remote error: GET https://index.docker.io/v2/library/bookstore-frontend/manifests/b830dbd-fixed8: UNAUTHORIZED: authentication required; [map[Action:pull Class: Name:library/bookstore-frontend Type:repository]]
+
+
